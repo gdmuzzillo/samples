@@ -1,0 +1,88 @@
+{
+  "id": "/decidir/coretx",
+  "cmd": null,
+  "cpus": 0.1,
+  "mem": 2048,
+  "disk": 0,
+  "instances": 1,
+  "constraints": [
+    [
+      "hostname",
+      "UNIQUE"
+    ]
+  ],
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {
+        "containerPath": "/opt/docker/logs/",
+        "hostPath": "/var/log/decidir/",
+        "mode": "RW"
+      },
+      {
+        "containerPath": "/etc/localtime",
+        "hostPath": "/etc/localtime",
+        "mode": "RO"
+      },
+      {
+        "containerPath": "/opt/docker/conf/environment.conf",
+        "hostPath": "/data/mysql/production.conf",
+        "mode": "RW"
+      }
+    ],
+    "docker": {
+      "image": "lapp-dvde004:5000/coretx:{{ TAG }}",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "hostPort": 0,
+          "servicePort": 10000,
+          "protocol": "tcp",
+          "labels": {}
+        }
+      ],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "env": {
+    "PROTOCOL_MASTERCARD_TIMEOUT_MILLIS": "7000",
+    "JAVA_OPTS": "-Duser.timezone=GMT-3",
+    "REDIS_HOST": "marathon-lb.infrastructure.marathon.mesos",
+    "MYSQL_CONNECTION_URL": "jdbc:mysql://192.168.133.20:3306,192.168.73.10:3306/decidir-prod-redbee?failOverReadOnly=false",
+    "PROTOCOL_MASTERCARD": "http://marathon-lb.infrastructure.marathon.mesos:10031",
+    "REDIS_PORT": "10050",
+    "PROTOCOL_VISA": "http://marathon-lb.infrastructure.marathon.mesos:10030",
+    "PROTOCOL_VISA_TIMEOUT_MILLIS": "7000",
+    "KAFKA_BOOTSTRAP_SERVERS": "broker-0.kafka-prod.mesos:9191",
+    "CYBERSOURCE_URL": "https://ics2wstest.ic3.com:443/commerce/1.x/transactionProcessor",
+    "CYBERSOURCE_TIMEOUT_MILLIS": "7000",
+    "LEGACY_ENCRYPTION_KEY_INDEX": "5",
+    "LEGACY_ENCRYPTION_KEY": "96516fbc6dc3bc62e5ea51c94e763c2cd6ef547815e290103edcb58de08bf4ea",
+    "LOGSTASH_URL": "marathon-lb.infrastructure.marathon.mesos:10043"
+  },
+  "healthChecks": [
+    {
+      "path": "/healthcheck",
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "gracePeriodSeconds": 30,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "internal"
+  },
+  "portDefinitions": [
+    {
+      "port": 10000,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ]
+}

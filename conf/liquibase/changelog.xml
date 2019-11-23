@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<!-- Agregar un include por cada tarea de Jira y crear el archivo correspondiente 
+		dentro de la carpeta changes. Ej.: 
+		
+		<include file="changes/DECD-1010.xml" relativeToChangelogFile="true"/> 
+		
+	-->
+
+</databaseChangeLog>

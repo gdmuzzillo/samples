@@ -1,0 +1,82 @@
+{
+  "id": "/decidir/coretx",
+  "cmd": null,
+  "cpus": 0.1,
+  "mem": 2048,
+  "disk": 0,
+  "instances": 1,
+  "constraints": [
+    [
+      "hostname",
+      "UNIQUE"
+    ]
+  ],
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {
+        "containerPath": "/opt/docker/logs/",
+        "hostPath": "/var/log/decidir/",
+        "mode": "RW"
+      },
+      {
+        "containerPath": "/etc/localtime",
+        "hostPath": "/etc/localtime",
+        "mode": "RO"
+      }
+    ],
+    "docker": {
+      "image": "lapp-dvde004:5000/coretx:{{ TAG }}",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "hostPort": 0,
+          "servicePort": 10000,
+          "protocol": "tcp",
+          "labels": {}
+        }
+      ],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "env": {
+    "JAVA_OPTS": "-Duser.timezone=GMT-3",
+    "MYSQL_CONNECTION_URL": "jdbc:mysql://192.168.75.20:3306/sps433",
+    "PROTOCOL_MASTERCARD": "http://marathon-lb.infrastructure.marathon.mesos:10031",
+    "PROTOCOL_VISA": "http://marathon-lb.infrastructure.marathon.mesos:10030",
+    "REDIS_WATCHER_URL": "http://marathon-lb.infrastructure.marathon.mesos:10008/sentinels",
+    "OPERATION_TTL_SECONDS": "900",
+    "MYSQL_HOST": "192.168.75.20",
+    "KAFKA_BOOTSTRAP_SERVERS": "broker-0.kafka.mesos:9803",
+    "CYBERSOURCE_URL": "https://ics2wstest.ic3.com:443/commerce/1.x/transactionProcessor",
+    "MYSQL_PORT": "3306",
+    "LEGACY_ENCRYPTION_KEY_INDEX": "17",
+    "LOGSTASH_URL": "marathon-lb.infrastructure.marathon.mesos:10043"
+  },
+  "healthChecks": [
+    {
+      "path": "/healthcheck",
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "gracePeriodSeconds": 30,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "internal",
+    "ENVIRONMENT": "desarrollo"
+  },
+  "portDefinitions": [
+    {
+      "port": 10000,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ]
+}

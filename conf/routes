@@ -1,0 +1,75 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+
+GET		/healthcheck				    controllers.HealthCheckController.check
+
+
+
+# TODO Pensar como plantear las terminales como recurso REST
+POST     /terminales/:idSite/:idMedioPago/:idProtocolo/:txId                    controllers.TerminalsController.acquire(idSite, idMedioPago: Int, idProtocolo: Int, txId)
+POST     /terminales/:idSite/:idMedioPago/:idProtocolo/:txId/:terminal          controllers.TerminalsController.acquireSpecificTerminal(idSite, idMedioPago: Int, idProtocolo: Int, txId, terminal)
+DELETE   /terminales/:idSite/:idMedioPago/:idProtocolo/:terminal                controllers.TerminalsController.release(idSite, idMedioPago: Int, idProtocolo: Int, terminal)
+POST     /nrostrace/:idSite/:idBackend/:terminal/:tipo                          controllers.TerminalsController.nextTrace(idSite, idBackend: String, terminal: String, tipo: String)
+
+PUT 	/tx/:txId			            controllers.OperationController.put(txId: String)
+POST	/tx					            controllers.OperationController.post()
+POST	/tx/:txId/procesar	            controllers.OperationController.procesar(txId: String)
+POST	/tx/:txId/offline	            controllers.OperationController.offline(txId: String)
+
+GET 	/replication/all				controllers.replication.LegacyReplicationController.replicateAllEntities
+POST	/replication/:entidad			controllers.replication.LegacyReplicationController.replicateAll(entidad: String)
+POST	/replication/:entidad/:id		controllers.replication.LegacyReplicationController.replicateOne(entidad: String, id: String)
+
+GET		/replication/:entidad			controllers.replication.LegacyReplicationController.replicateAll(entidad: String)
+GET		/replication/:entidad/:id		controllers.replication.LegacyReplicationController.replicateOne(entidad: String, id: String)
+
+DELETE	/replication/:entidad/:id		controllers.replication.LegacyReplicationController.deleteOne(entidad: String, id: String)
+
+GET		/repository/sites/all			controllers.replication.RepositoryController.sites
+GET		/repository/sites/:id			controllers.replication.RepositoryController.site(id: String)
+GET		/repository/marcasTarjeta/all	controllers.replication.RepositoryController.marcasTarjeta
+GET		/repository/marcasTarjeta/:id	controllers.replication.RepositoryController.marcaTarjeta(id: String)
+GET		/repository/mediosPago/all		controllers.replication.RepositoryController.mediosPago
+GET		/repository/mediosPago/:id		controllers.replication.RepositoryController.medioPago(id: String)
+GET		/repository/monedas/all			controllers.replication.RepositoryController.monedas
+GET		/repository/monedas/:id			controllers.replication.RepositoryController.moneda(id: String)
+GET		/repository/tiposActividad/all	controllers.replication.RepositoryController.tiposActividad
+GET		/repository/tiposActividad/:id	controllers.replication.RepositoryController.tipoActividad(id: String)
+
+GET		/migrate/site/:id				controllers.replication.MigratorController.site(id: String)
+
+GET		/references/monedas				controllers.ReferenceDataController.monedas
+GET		/references/marcasTarjeta		controllers.ReferenceDataController.marcasTarjeta
+GET 	/references/tiposDocumento		controllers.ReferenceDataController.tiposDocumento
+GET     /references/bancos              controllers.ReferenceDataController.bancos
+
+GET		/charges/:siteId/:id			controllers.TransactionController.retrieve(siteId:String, id: Long)
+PUT		/charges/:siteId/:id			controllers.TransactionController.confirm(siteId:String, id: Long)
+GET		/sites/:siteId/charges			controllers.TransactionController.list(siteId: String, offset: Int, pageSize: Int, siteOperationId: Option[String], merchantId: Option[String], csYellow: Option[Boolean], dateFrom: Option[String], dateTo: Option[String])
+
+POST	/charges/:siteId/:id/refunds	controllers.refund.RefundController.refund(siteId:String, id: Long)
+GET		/charges/:siteId/:id/refunds	controllers.refund.RefundController.list(siteId:String, id: Long)
+
+GET		/pruebas/response/:httpCode		controllers.TestController.check(httpCode)
+GET		/pruebas/verify		            controllers.TestController.verify
+
+GET     /references/paymentmethods/:siteId      controllers.ReferenceDataController.paymentMethods(siteId: String)
+DELETE	/charges/:siteId/:chargeId/refunds/:id	controllers.refund.RefundController.rollback(siteId:String, chargeId: Long, id: Long)
+
+POST	/paymentNotification/:nroOperacion/:codigoBarra	    controllers.OfflineNotificationController.paymentNotification(nroOperacion: String, codigoBarra: String)
+POST	/reverseNotification/:nroOperacion/:codigoBarra	    controllers.OfflineNotificationController.reverseNotification(nroOperacion: String, codigoBarra: String)
+
+GET     /transactions/annulment           controllers.refund.AnnulInvalidTransactionController.process()
+
+PUT     /configuration                  controllers.ConfigurationController.replace
+
+#POST    /charges/:siteId/:id/reverse    controllers.reversal.ReversalController.process(siteId:String, id: Long)
+
+
+
+
